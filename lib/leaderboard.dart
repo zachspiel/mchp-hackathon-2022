@@ -57,9 +57,21 @@ class _LeaderboardState extends State<Leaderboard> {
           String year = getYear();
           String badge = result[key]["badge"];
           String location = result[key]["location"];
-          double dailyScore = result[key]["steps"][getCurrentDate()] ?? 0;
-          double monthlyScore = result[key]["months"]["$year-$month"] ?? 0;
-          double yearlyScore = result[key]["years"][year] ?? 0;
+
+          double dailyScore = 0;
+          if (result[key].containsKey("steps")) {
+            dailyScore = result[key]["steps"][getCurrentDate()] ?? 0;
+          }
+
+          double monthlyScore = 0;
+          if (result[key].containsKey("months")) {
+            monthlyScore = result[key]["months"]["$year-$month"] ?? 0;
+          }
+
+          double yearlyScore = 0;
+          if (result[key].containsKey("years")) {
+            yearlyScore = result[key]["years"][year] ?? 0;
+          }
 
           setState(() {
             _scores.add(LeaderBoardScore(
