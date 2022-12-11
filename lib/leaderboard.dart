@@ -162,22 +162,22 @@ class _LeaderboardState extends State<Leaderboard> {
       direction: Axis.horizontal,
       children: [
         const SectionTitle(title: "Daily Leaderboard"),
-        Padding(
-            padding: const EdgeInsets.all(16),
+        SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: getColumns(),
               rows: getRows(_dailyLeaderboard),
             )),
         SectionTitle(title: "${getMonth()} Leaderboard"),
-        Padding(
-            padding: const EdgeInsets.all(16),
+        SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: getColumns(),
               rows: getRows(_monthlyLeaderboard),
             )),
         SectionTitle(title: "${DateTime.now().year} Leaderboard"),
-        Padding(
-            padding: const EdgeInsets.all(16),
+        SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: getColumns(),
               rows: getRows(_yearlyLeaderboard),

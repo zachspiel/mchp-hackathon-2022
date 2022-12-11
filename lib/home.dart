@@ -46,6 +46,7 @@ class _HomeState extends State<Home> {
   }
 
   void _read() async {
+    _requestPermission();
     final now = DateTime.now();
     final results = await Fitness.read(
       timeRange: TimeRange(
@@ -129,68 +130,56 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         body: GridView.count(crossAxisCount: 2, children: [
-      Column(children: [
-        const SectionTitle(title: "Today's Activity"),
-        Card(
-          clipBehavior: Clip.antiAlias,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            ListTile(title: Text("Total Steps: $_steps")),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SfCircularChart(
-                  series: [
-                    DoughnutSeries<_ChartData, String>(
-                      dataSource: _data,
-                      radius: "35%",
-                      xValueMapper: (_ChartData data, _) => data.x,
-                      yValueMapper: (_ChartData data, _) => data.y,
-                    )
-                  ],
-                )
-              ],
-            )
-          ]),
-        ),
-        Column(children: [
-          const SectionTitle(title: "Add Steps"),
-          Card(
-            clipBehavior: Clip.antiAlias,
-            child: Row(
-              children: [
-                Expanded(
-                    child: TextField(
-                  controller: myController,
-                  focusNode: _focusInput,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  decoration: InputDecoration(
-                    hintText: "Enter Steps",
-                    contentPadding: const EdgeInsets.all(12),
-                    errorBorder: UnderlineInputBorder(
-                      borderRadius: BorderRadius.circular(6.0),
-                      borderSide: const BorderSide(
-                        color: Colors.red,
+      SizedBox(
+          width: deviceWidth > 500 ? deviceWidth / 2 : deviceWidth,
+          child: Column(children: [
+            const SectionTitle(title: "Today's Activity"),
+            Card(
+              clipBehavior: Clip.antiAlias,
+              child: Column(children: [
+                ListTile(title: Text("Total Steps: $_steps")),
+              ]),
+            ),
+            Column(children: [
+              const SectionTitle(title: "Add Steps"),
+              Card(
+                clipBehavior: Clip.antiAlias,
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: TextField(
+                      controller: myController,
+                      focusNode: _focusInput,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(
+                        hintText: "Enter Steps",
+                        contentPadding: const EdgeInsets.all(12),
+                        errorBorder: UnderlineInputBorder(
+                          borderRadius: BorderRadius.circular(6.0),
+                          borderSide: const BorderSide(
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    )),
+                    ElevatedButton(
+                      onPressed: () {
+                        updateSteps();
+                      },
+                      child: const Text(
+                        'Submit',
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
-                  ),
-                )),
-                ElevatedButton(
-                  onPressed: () {
-                    updateSteps();
-                  },
-                  child: const Text(
-                    'Submit',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ])
-      ])
+              ),
+            ])
+          ])),
     ]));
   }
 }

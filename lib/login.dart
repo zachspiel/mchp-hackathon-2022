@@ -34,6 +34,8 @@ class LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () {
         _focusEmail.unfocus();
@@ -51,7 +53,7 @@ class LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width / 4,
+                      width: deviceWidth > 500 ? deviceWidth / 2 : deviceWidth,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
