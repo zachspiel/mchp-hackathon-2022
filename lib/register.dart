@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:hackathon_2022/firebase_auth.dart';
+import 'package:hackathon_2022/home.dart';
+import 'package:hackathon_2022/main.dart';
 import 'package:hackathon_2022/profile.dart';
 import 'package:hackathon_2022/validator.dart';
 
@@ -56,6 +58,7 @@ class RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         _focusName.unfocus();
@@ -68,7 +71,7 @@ class RegisterPageState extends State<RegisterPage> {
         ),
         body: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width / 4,
+            width: deviceWidth > 500 ? deviceWidth / 2 : deviceWidth,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -175,9 +178,10 @@ class RegisterPageState extends State<RegisterPage> {
                                           Navigator.of(context)
                                               .pushAndRemoveUntil(
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProfilePage(user: user),
-                                            ),
+                                                builder: (context) => MyHomePage(
+                                                    title:
+                                                        "Micro Steps for Macro Health",
+                                                    user: user)),
                                             ModalRoute.withName('/'),
                                           );
                                         }

@@ -13,15 +13,27 @@ class Leaderboard extends StatefulWidget {
   State<Leaderboard> createState() => _LeaderboardState();
 }
 
+class LeaderBoardScore {
+  LeaderBoardScore(
+      {required this.badge,
+      required this.location,
+      required this.dailyScore,
+      required this.monthlyScore,
+      required this.yearlyScore});
+  final String badge;
+  final String location;
+  double dailyScore;
+  double monthlyScore;
+  double yearlyScore;
+}
+
 class _LeaderboardState extends State<Leaderboard> {
-  final Map<String, double> _dailyScores = {};
-  final Map<String, double> _monthlyScores = {};
-  final Map<String, double> _yearlyScores = {};
-  Map<String, double> _dailyLeaderboard = {};
-  Map<String, double> _monthlyLeaderboard = {};
-  Map<String, double> _yearlyLeaderboard = {};
-  String _location = "";
-  String _badge = "";
+  List<LeaderBoardScore> _dailyLeaderboard = [];
+  List<LeaderBoardScore> _monthlyLeaderboard = [];
+  List<LeaderBoardScore> _yearlyLeaderboard = [];
+
+  List<LeaderBoardScore> _scores = [];
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _database = FirebaseDatabase.instance.ref();
 
@@ -29,36 +41,66 @@ class _LeaderboardState extends State<Leaderboard> {
   void initState() {
     super.initState();
     _activateListeners();
-    getBadge();
-    getLocation();
   }
 
-  void _activateListeners() {
+  void _activateListeners() async {
     _database.child("/users").onValue.listen((event) {
       Map? result = event.snapshot.value as Map;
 
       if (result.entries.isNotEmpty) {
+        setState(() {
+          _scores = [];
+        });
+
         result.forEach((key, value) {
           String month = getMonthIndex().toString();
           String year = getYear();
+          String badge = result[key]["badge"];
+          String location = result[key]["location"];
           double dailyScore = result[key]["steps"][getCurrentDate()] ?? 0;
           double monthlyScore = result[key]["months"]["$year-$month"] ?? 0;
           double yearlyScore = result[key]["years"][year] ?? 0;
 
           setState(() {
-            _dailyScores[key] = dailyScore;
-            _monthlyScores[key] = monthlyScore;
-            _yearlyScores[key] = yearlyScore;
+            _scores.add(LeaderBoardScore(
+                badge: badge,
+                location: location,
+                dailyScore: dailyScore,
+                monthlyScore: monthlyScore,
+                yearlyScore: yearlyScore));
           });
         });
-
         setState(() {
-          _dailyLeaderboard = sortEntries(_dailyScores);
-          _monthlyLeaderboard = sortEntries(_monthlyScores);
-          _yearlyLeaderboard = sortEntries(_yearlyScores);
+          _dailyLeaderboard = sortDailyScores();
+          _monthlyLeaderboard = sortMonthlyScores();
+          _yearlyLeaderboard = sortYearlyScores();
         });
       }
     });
+  }
+
+  List<LeaderBoardScore> sortDailyScores() {
+    List<LeaderBoardScore> scoresCopy = [..._scores];
+    scoresCopy.sort(
+        (score1, score2) => score2.dailyScore.compareTo(score1.dailyScore));
+
+    return scoresCopy;
+  }
+
+  List<LeaderBoardScore> sortMonthlyScores() {
+    List<LeaderBoardScore> scoresCopy = [..._scores];
+    scoresCopy.sort(
+        (score1, score2) => score2.monthlyScore.compareTo(score1.monthlyScore));
+
+    return scoresCopy;
+  }
+
+  List<LeaderBoardScore> sortYearlyScores() {
+    List<LeaderBoardScore> scoresCopy = [..._scores];
+    scoresCopy.sort(
+        (score1, score2) => score2.yearlyScore.compareTo(score1.yearlyScore));
+
+    return scoresCopy;
   }
 
   Map<String, double> sortEntries(Map<String, double> map) {
@@ -101,56 +143,40 @@ class _LeaderboardState extends State<Leaderboard> {
     return DateTime.now().year.toString();
   }
 
-  String getPlacement(MapEntry<String, double> entry, Map<String, double> map) {
-    int index = map.entries.map((e) => e.key).toList().indexOf(entry.key) + 1;
-
+  String getPlacement(
+      LeaderBoardScore score, List<LeaderBoardScore> leaderboard) {
+    int index = leaderboard.indexOf(score) + 1;
     return index.toString();
-  }
-
-  void getBadge() async {
-    String path = "users/${_auth.currentUser?.uid ?? ''}/badge";
-
-    final snapshot = await _database.child(path).get();
-
-    if (snapshot.exists) {
-      setState(() {
-        _badge = snapshot.value as String;
-      });
-    }
-  }
-
-  void getLocation() async {
-    String path = "users/${_auth.currentUser?.uid ?? ''}/location";
-
-    final snapshot = await _database.child(path).get();
-
-    if (snapshot.exists) {
-      setState(() {
-        _location = snapshot.value as String;
-      });
-    }
   }
 
   List<DataColumn> getColumns() {
     return const [
       DataColumn(label: Expanded(child: Text("No."))),
       DataColumn(label: Expanded(child: Text("Badge ID"))),
-      DataColumn(label: Expanded(child: Text("Name"))),
       DataColumn(label: Expanded(child: Text("Location"))),
       DataColumn(label: Expanded(child: Text("Total Steps"))),
     ];
   }
 
-  List<DataRow> getRows(Map<String, double> leaderboard) {
-    return leaderboard.entries
+  List<DataRow> getRows(List<LeaderBoardScore> leaderboard, String key) {
+    return leaderboard
         .map((e) => DataRow(cells: [
               DataCell(Text(getPlacement(e, leaderboard))),
-              DataCell(Text(_badge)),
-              DataCell(Text(_auth.currentUser?.displayName ?? "")),
-              DataCell(Text(_location)),
-              DataCell(Text(e.value.toString()))
+              DataCell(Text(e.badge)),
+              DataCell(Text(e.location)),
+              DataCell(Text(getScoreByType(key, e).toString()))
             ]))
         .toList();
+  }
+
+  double getScoreByType(String type, LeaderBoardScore score) {
+    if (type == "daily") {
+      return score.dailyScore;
+    } else if (type == "monthly") {
+      return score.monthlyScore;
+    }
+
+    return score.yearlyScore;
   }
 
   @override
@@ -166,21 +192,21 @@ class _LeaderboardState extends State<Leaderboard> {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: getColumns(),
-              rows: getRows(_dailyLeaderboard),
+              rows: getRows(_dailyLeaderboard, "daily"),
             )),
         SectionTitle(title: "${getMonth()} Leaderboard"),
         SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: getColumns(),
-              rows: getRows(_monthlyLeaderboard),
+              rows: getRows(_monthlyLeaderboard, "monthly"),
             )),
         SectionTitle(title: "${DateTime.now().year} Leaderboard"),
         SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: getColumns(),
-              rows: getRows(_yearlyLeaderboard),
+              rows: getRows(_yearlyLeaderboard, "yearly"),
             )),
       ],
     ));
