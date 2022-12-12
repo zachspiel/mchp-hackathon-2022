@@ -194,10 +194,7 @@ class _LeaderboardState extends State<Leaderboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Wrap(
-      alignment: WrapAlignment.spaceBetween,
-      spacing: 30,
-      direction: Axis.horizontal,
+        body: ListView(
       children: [
         const SectionTitle(title: "Daily Leaderboard"),
         SingleChildScrollView(

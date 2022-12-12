@@ -35,7 +35,6 @@ class LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
-    print(deviceWidth);
 
     return GestureDetector(
       onTap: () {

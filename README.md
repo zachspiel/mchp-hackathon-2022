@@ -1,16 +1,26 @@
-# hackathon_2022
+# Micro Steps
 
-A new Flutter project.
+## An easy to use application for tracking steps across all of your devices
 
-## Getting Started
+[Home Page](https://github.com/zachspiel/mchp-hackathon-2022/blob/master/screenshots/home.jpg?raw=true)
 
-This project is a starting point for a Flutter application.
+[alt text](https://github.com/[username]/mchp-hackathon-2022/blob/master/calendar.jpg?raw=true)
 
-A few resources to get you started if this is your first Flutter project:
+[alt text](https://github.com/[username]/mchp-hackathon-2022/blob/master/leaderboard.jpg?raw=true)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Features
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Support for Android, IOS, and Web
+- Add steps each day to automatically be added to the leaderboard to compete against other participants
+- View your previous daily steps
+
+## Tech Stack
+
+Dillinger uses a number of open source projects to work properly:
+
+- [Flutter]
+- [Firebase]
+
+## Installation
+
+See [Flutter](https://docs.flutter.dev/get-started/install) documentation to get started.
