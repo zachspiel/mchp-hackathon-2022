@@ -2,11 +2,11 @@
 
 ## An easy to use application for tracking steps across all of your devices
 
-[Home Page](./screenshots/home.jpg?raw=true)
+![Home Page](./screenshots/home.jpg?raw=true "Home Page")
 
-[alt text](./screenshots/leaderboard.jpg?raw=true)
+![Leaderboard Page](./screenshots/leaderboard.jpg?raw=true "Leaderboard Page")
 
-[alt text](./screenshots/calendar.jpg?raw=true)
+![Calendar Page](./screenshots/calendar.jpg?raw=true "Calendar Page")
 
 ## Features
 
