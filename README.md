@@ -2,11 +2,11 @@
 
 ## An easy to use application for tracking steps across all of your devices
 
-[Home Page](https://github.com/zachspiel/mchp-hackathon-2022/blob/master/screenshots/home.jpg?raw=true)
+[Home Page](./screenshots/home.jpg?raw=true)
 
-[alt text](https://github.com/[username]/mchp-hackathon-2022/blob/master/calendar.jpg?raw=true)
+[alt text](./screenshots/leaderboard.jpg?raw=true)
 
-[alt text](https://github.com/[username]/mchp-hackathon-2022/blob/master/leaderboard.jpg?raw=true)
+[alt text](./screenshots/calendar.jpg?raw=true)
 
 ## Features
 
