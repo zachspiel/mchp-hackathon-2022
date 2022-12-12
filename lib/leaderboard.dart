@@ -55,8 +55,18 @@ class _LeaderboardState extends State<Leaderboard> {
         result.forEach((key, value) {
           String month = getMonthIndex().toString();
           String year = getYear();
-          String badge = result[key]["badge"];
-          String location = result[key]["location"];
+          String badge = "No badge found.";
+          String location = "No location found.";
+
+          if (result[key].containsKey("badge")) {
+            badge = result[key]["badge"];
+          } else if (key == _auth.currentUser?.uid) {
+            badge = _auth.currentUser?.displayName ?? "";
+          }
+
+          if (result[key].containsKey("location")) {
+            location = result[key]["location"];
+          }
 
           double dailyScore = 0;
           if (result[key].containsKey("steps")) {
