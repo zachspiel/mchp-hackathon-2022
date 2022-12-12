@@ -17,11 +17,13 @@ class LeaderBoardScore {
   LeaderBoardScore(
       {required this.badge,
       required this.location,
+      required this.id,
       required this.dailyScore,
       required this.monthlyScore,
       required this.yearlyScore});
   final String badge;
   final String location;
+  final String id;
   double dailyScore;
   double monthlyScore;
   double yearlyScore;
@@ -87,6 +89,7 @@ class _LeaderboardState extends State<Leaderboard> {
             _scores.add(LeaderBoardScore(
                 badge: badge,
                 location: location,
+                id: key,
                 dailyScore: dailyScore,
                 monthlyScore: monthlyScore,
                 yearlyScore: yearlyScore));
@@ -182,12 +185,26 @@ class _LeaderboardState extends State<Leaderboard> {
 
   List<DataRow> getRows(List<LeaderBoardScore> leaderboard, String key) {
     return leaderboard
-        .map((e) => DataRow(cells: [
-              DataCell(Text(getPlacement(e, leaderboard))),
-              DataCell(Text(e.badge)),
-              DataCell(Text(e.location)),
-              DataCell(Text(getScoreByType(key, e).toString()))
-            ]))
+        .map((e) => DataRow(
+                color: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withOpacity(0.08);
+                  }
+                  if (e.id == _auth.currentUser?.uid) {
+                    return Colors.blueAccent.withOpacity(0.3);
+                  }
+                  return null; // Use default value for other states and odd rows.
+                }),
+                cells: [
+                  DataCell(Text(getPlacement(e, leaderboard))),
+                  DataCell(Text(e.badge)),
+                  DataCell(Text(e.location)),
+                  DataCell(Text(getScoreByType(key, e).toString()))
+                ]))
         .toList();
   }
 

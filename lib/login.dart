@@ -16,8 +16,7 @@ class Login extends StatefulWidget {
 
 class LoginState extends State<Login> {
   String? _error;
-  final _formKey = GlobalKey<FormState>();
-
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
 
@@ -50,7 +49,9 @@ class LoginState extends State<Login> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: deviceWidth > 500
+                      ? MainAxisAlignment.center
+                      : MainAxisAlignment.start,
                   children: [
                     SizedBox(
                       width: deviceWidth > 500 ? deviceWidth / 2 : deviceWidth,

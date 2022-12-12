@@ -67,7 +67,7 @@ class _HistoryState extends State<History> {
     String path = day.toString().split(' ')[0];
     double steps = _steps[path] ?? 0;
     return [
-      Event(steps.toString()),
+      Event("$steps steps"),
     ];
   }
 
@@ -153,7 +153,7 @@ class _HistoryState extends State<History> {
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                   child: ListTile(
-                    title: Text(getStepsForSelectedDay().toString()),
+                    title: Text("${getStepsForSelectedDay().toString()} steps"),
                   ),
                 );
               },
