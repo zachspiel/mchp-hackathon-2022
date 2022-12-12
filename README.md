@@ -16,8 +16,6 @@
 
 ## Tech Stack
 
-Dillinger uses a number of open source projects to work properly:
-
 - [Flutter]
 - [Firebase]
 
